@@ -1,0 +1,21 @@
+{
+    "version": "0.1.0",
+    "description": "A lightweight CLI tool for controlling monitor/display settings on Windows.",
+    "homepage": "https://github.com/2015m/display-cli",
+    "license": "MIT",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/2015m/display-cli/releases/download/v0.1.0/dispman.exe",
+            "hash": "tbd"
+        }
+    },
+    "bin": "dispman.exe",
+    "checkver": "github",
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/2015m/display-cli/releases/download/v$version/dispman.exe"
+            }
+        }
+    }
+}

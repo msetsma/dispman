@@ -1,0 +1,21 @@
+{
+    "version": "0.1.0",
+    "description": "A CLI tool to control monitor settings on Windows.",
+    "homepage": "https://github.com/2015m/display-cli",
+    "license": "MIT",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/2015m/display-cli/releases/download/v0.1.0/display-cli.exe",
+            "hash": "tbd"
+        }
+    },
+    "bin": "display-cli.exe",
+    "checkver": "github",
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/2015m/display-cli/releases/download/v$version/display-cli.exe"
+            }
+        }
+    }
+}
