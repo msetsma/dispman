@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use display_cli::{config::{Config, Profile}, display, error::DisplayError};
+use dispman::{config::{Config, Profile}, display, error::DisplayError};
 use std::collections::HashMap;
 
 #[derive(Parser)]
@@ -91,7 +91,8 @@ fn main() -> anyhow::Result<()> {
         Commands::Capabilities { display } => {
             let displays = display::enumerate_displays()?;
             let target = get_display(&displays, display)?;
-            let caps = target.capabilities()?;
+            let caps_str = target.capabilities()?;
+            let caps = dispman::capabilities::Capabilities::parse(&caps_str);
             println!("{}", caps);
         }
         Commands::Get { feature, display } => {

@@ -1,6 +1,6 @@
 use crate::error::DisplayError;
 use windows::Win32::Devices::Display::{
-    GetCapabilitiesStringLength, GetVCPFeatureAndVCPFeatureReply, SetVCPFeature,
+    GetCapabilitiesStringLength, GetVCPFeatureAndVCPFeatureReply, SetVCPFeature, CapabilitiesRequestAndCapabilitiesReply,
 };
 use windows::Win32::Foundation::HANDLE;
 
@@ -50,5 +50,17 @@ pub fn get_capabilities(handle: HANDLE) -> Result<String, DisplayError> {
         return Err(DisplayError::DdcCommunicationFailed);
     }
 
-    Ok(format!("Capabilities length: {}", length))
+    let mut buffer = vec![0u8; length as usize];
+    let success_str: i32;
+    unsafe {
+        success_str = CapabilitiesRequestAndCapabilitiesReply(handle, &mut buffer);
+    }
+
+    if success_str == 0 {
+        return Err(DisplayError::DdcCommunicationFailed);
+    }
+
+    // Convert to string and trim null bytes
+    let s = String::from_utf8_lossy(&buffer).to_string();
+    Ok(s.trim_matches(char::from(0)).to_string())
 }

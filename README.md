@@ -55,6 +55,79 @@ These APIs communicate over the video cable using the DDC/CI protocol (I2C-based
 - Profile/preset system for quick switching between configurations
 - Monitor-specific quirks/workarounds database
 
+## Usage
+
+### Running Locally
+
+To run the tool locally, use `cargo run` followed by `--` to pass arguments to the CLI.
+
+```powershell
+cargo run -- <command> [options]
+```
+
+### Available Commands
+
+#### Detect Displays
+Finds all connected monitors that support DDC/CI.
+```powershell
+cargo run -- detect
+# Output as JSON
+cargo run -- detect --json
+```
+
+#### Inspect Display
+Shows a summary of common settings (Brightness, Contrast, Input, Volume, Power) for a specific display.
+```powershell
+# Inspect the default (first) display
+cargo run -- inspect
+
+# Inspect a specific display by ID (e.g., 1)
+cargo run -- inspect --display 1
+```
+
+#### Get a Setting
+Read a specific value. You can use names like `brightness`, `contrast`, `volume`, `input`, or raw hex codes (e.g., `0x10`).
+```powershell
+# Get brightness of default display
+cargo run -- get brightness
+
+# Get contrast of display 1
+cargo run -- get contrast --display 1
+```
+
+#### Set a Setting
+Change a value.
+```powershell
+# Set brightness to 50%
+cargo run -- set brightness 50
+
+# Set input source to HDMI1 (Commonly 0x11 or 17, but varies by monitor)
+cargo run -- set input 17 --display 1
+```
+
+#### Check Capabilities
+Reads the raw capabilities string from the monitor.
+```powershell
+cargo run -- capabilities
+```
+
+#### Profiles
+Save and load configurations.
+```powershell
+# List saved profiles
+cargo run -- profile list
+
+# Save current settings of all monitors as "work"
+cargo run -- profile save work
+
+# Load the "work" profile
+cargo run -- profile load work
+```
+
+### Troubleshooting
+- **Administrator Privileges:** DDC/CI commands often require running the terminal as **Administrator** on Windows.
+- **Monitor Support:** If commands fail, ensure "DDC/CI" is enabled in your monitor's OSD menu.
+
 ## Contributing
 
 [To be added: contribution guidelines, bug reporting, etc.]
@@ -99,15 +172,6 @@ dispman/
 | 0xD6 | Power Mode | 1=On, 4=Standby |
 
 *Note: Input source codes are NOT standardized and vary by manufacturer*
-
-### Critical Implementation Details
-
-- Always check `isatty()` before using colors/formatting
-- Respect `NO_COLOR` environment variable
-- Use stderr for progress/status, stdout for actual output
-- Exit code 0 for success, 1 for errors
-- Provide helpful error messages when monitors don't support DDC/CI
-- Consider adding small delays between DDC commands (some monitors are slow)
 
 ### Testing Approach
 

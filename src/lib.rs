@@ -3,3 +3,4 @@ pub mod ddc;
 pub mod display;
 pub mod config;
 pub mod error;
+pub mod capabilities;
