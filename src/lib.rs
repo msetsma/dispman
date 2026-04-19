@@ -1,6 +1,5 @@
-pub mod vcp;
-pub mod ddc;
-pub mod display;
+pub mod backend;
+pub mod capabilities;
 pub mod config;
 pub mod error;
-pub mod capabilities;
+pub mod vcp;

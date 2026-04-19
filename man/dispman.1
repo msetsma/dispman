@@ -1,0 +1,160 @@
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.TH dispman 1  "dispman 0.1.0" 
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.SH NAME
+dispman \- Control monitor settings via DDC/CI
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.SH SYNOPSIS
+\fBdispman\fR [\fB\-v\fR|\fB\-\-verbose\fR] [\fB\-h\fR|\fB\-\-help\fR] [\fB\-V\fR|\fB\-\-version\fR] <\fIsubcommands\fR>
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.SH DESCRIPTION
+dispman reads and changes monitor settings over the DDC/CI protocol. It can switch input sources, adjust brightness and contrast, change volume, query a monitor\*(Aqs capabilities string, and save or restore groups of settings as named profiles.
+.PP
+Monitors are addressed by a zero\-based index assigned at enumeration time. If no display is given, commands operate on display 0.
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.SH OPTIONS
+.TP
+\fB\-v\fR, \fB\-\-verbose\fR
+Enable verbose output
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help (see a summary with \*(Aq\-h\*(Aq)
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+Print version
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.SH SUBCOMMANDS
+.TP
+dispman\-detect(1)
+Detect available displays
+.TP
+dispman\-capabilities(1)
+Get capabilities of a display
+.TP
+dispman\-get(1)
+Get a VCP feature value
+.TP
+dispman\-set(1)
+Set a VCP feature value
+.TP
+dispman\-profile(1)
+Manage profiles
+.TP
+dispman\-inspect(1)
+Inspect all settings for a display
+.TP
+dispman\-help(1)
+Print this message or the help of the given subcommand(s)
+.SH FEATURE NAMES
+The following case-insensitive names are accepted anywhere a
+.I FEATURE
+argument is expected:
+.TP 14
+.B brightness
+VCP 0x10 \(em luminance, 0\-100.
+.TP
+.B contrast
+VCP 0x12 \(em contrast, 0\-100.
+.TP
+.B input
+VCP 0x60 \(em input source. Values are vendor-specific.
+.TP
+.B volume
+VCP 0x62 \(em audio volume, 0\-100.
+.TP
+.B power
+VCP 0xD6 \(em power mode. Common values: 1 = on, 4 = standby.
+.PP
+Any other VCP code may be supplied as a hex literal
+.RB ( 0xNN )
+or decimal integer in the range 0\-255.
+.SH FILES
+.TP
+Windows
+.I %APPDATA%\\dispman\\dispman\\config.toml
+.TP
+macOS
+.I ~/Library/Application Support/com.dispman.dispman/config.toml
+.PP
+The config file is managed by
+.B dispman profile
+subcommands and should not normally be edited by hand.
+.SH EXAMPLES
+.PP
+List all monitors as JSON:
+.PP
+.RS 4
+.nf
+dispman detect \-\-json
+.fi
+.RE
+.PP
+Set the second monitor's input source to HDMI1 (code often 0x11):
+.PP
+.RS 4
+.nf
+dispman set input 0x11 \-\-display 1
+.fi
+.RE
+.PP
+Save the current settings of every monitor as a profile called
+.IR work :
+.PP
+.RS 4
+.nf
+dispman profile save work
+.fi
+.RE
+.PP
+Restore that profile later:
+.PP
+.RS 4
+.nf
+dispman profile load work
+.fi
+.RE
+.PP
+Dim the primary display and check the result:
+.PP
+.RS 4
+.nf
+dispman set brightness 30
+dispman get brightness
+.fi
+.RE
+.SH EXIT STATUS
+.TP
+.B 0
+The command completed successfully.
+.TP
+.B non-zero
+An error occurred: no matching display, DDC/CI communication failure,
+invalid feature name, or I/O error while reading or writing the profile
+file.
+.SH PLATFORM NOTES
+.SS Windows
+DDC/CI commands often require running the terminal as Administrator. The
+monitor's OSD must also have DDC/CI enabled.
+.SS macOS
+No elevated privileges are required. On Apple Silicon, DDC/CI works over
+USB\-C / DisplayPort Alt Mode; the built-in HDMI port on entry-level M1/M2
+Macs is not supported by the underlying IOKit APIs.
+.SS Linux
+Not yet supported; a Linux backend backed by
+.BR i2c-dev (4)
+is planned.
+.SH LIMITATIONS
+Not all monitors implement DDC/CI correctly. Some USB-C docks and hubs strip
+DDC traffic. Some displays require a short delay between commands; if a
+.B set
+appears to succeed but a following
+.B get
+returns the old value, retry after a brief pause.
+.SH SEE ALSO
+.BR ddcutil (1)

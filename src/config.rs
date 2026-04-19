@@ -12,7 +12,8 @@ pub struct Config {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Profile {
-    // Map of Display Name (e.g., "\\.\DISPLAY1") to a list of (VCP Code, Value)
+    // Map of Display stable_id (EDID-derived on macOS, device path on Windows)
+    // to a list of (VCP Code, Value).
     pub settings: HashMap<String, Vec<(u8, u32)>>,
 }
 
