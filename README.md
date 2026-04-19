@@ -112,46 +112,46 @@ cargo run -- <command> [options]
 
 #### Detect Displays
 Finds all connected monitors that support DDC/CI.
-```powershell
-cargo run -- detect
+```sh
+dispman detect
 # Output as JSON
-cargo run -- detect --json
+dispman detect --json
 ```
 
 #### Inspect Display
 Shows a summary of common settings (Brightness, Contrast, Input, Volume, Power) for a specific display.
-```powershell
+```sh
 # Inspect the default (first) display
-cargo run -- inspect
+dispman inspect
 
 # Inspect a specific display by ID (e.g., 1)
-cargo run -- inspect --display 1
+dispman inspect --display 1
 ```
 
 #### Get a Setting
 Read a specific value. You can use names like `brightness`, `contrast`, `volume`, `input`, or raw hex codes (e.g., `0x10`).
-```powershell
+```sh
 # Get brightness of default display
-cargo run -- get brightness
+dispman get brightness
 
 # Get contrast of display 1
-cargo run -- get contrast --display 1
+dispman get contrast --display 1
 ```
 
 #### Set a Setting
 Change a value.
-```powershell
+```sh
 # Set brightness to 50%
-cargo run -- set brightness 50
+dispman set brightness 50
 
 # Set input source to HDMI1 (Commonly 0x11 or 17, but varies by monitor)
-cargo run -- set input 17 --display 1
+dispman set input 17 --display 1
 ```
 
 #### Check Capabilities
 Reads the raw capabilities string from the monitor.
-```powershell
-cargo run -- capabilities
+```sh
+dispman capabilities
 ```
 
 #### Profiles
@@ -159,15 +159,15 @@ Save and load configurations.
 
 Profiles are keyed by a stable display identifier (EDID-derived on macOS; Windows device path for now), so saved profiles apply to the same physical monitor across reboots. **Note:** this changed in the cross-platform refactor — profiles saved with earlier versions must be re-saved.
 
-```powershell
+```sh
 # List saved profiles
-cargo run -- profile list
+dispman profile list
 
 # Save current settings of all monitors as "work"
-cargo run -- profile save work
+dispman profile save work
 
 # Load the "work" profile
-cargo run -- profile load work
+dispman profile load work
 ```
 
 ### Troubleshooting
